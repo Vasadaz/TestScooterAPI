@@ -89,15 +89,7 @@ def created_order(order_service: OrderService) -> Generator[dict, Any, None]:
     """
     track = order_service.create_test_order()
 
-    track_response = order_service.get_order_by_track(track)
-    assert track_response.status_code == 200, (
-        f"Не удалось получить созданный заказ по track={track}: "
-        f"{track_response.status_code} {track_response.text}"
-    )
-    order_body = track_response.json()
-    assert "order" in order_body, (
-        f"В ответе /orders/track нет ключа 'order': {order_body}"
-    )
+    order_body = order_service.get_order_by_track(track).json()
     order_id = order_body["order"]["id"]
 
     yield {"order_id": order_id, "track": track}
@@ -107,6 +99,8 @@ def created_order(order_service: OrderService) -> Generator[dict, Any, None]:
         if current.get("courierId"):
             order_service.finish_order(order_id)
         else:
+            order_service.cancel_order(track)
+
             order_service.cancel_order(track)
 
 
