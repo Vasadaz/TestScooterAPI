@@ -94,7 +94,7 @@ pytest -v
 
 ## Отчёт Allure
 
-[Пример отчёта Allure.](allure-report/index.html)
+[Пример отчёта Allure.]([allure-report/index.html](https://vasadaz.github.io/TestScooterAPI/allure-report/index.html))
 
 ```bash
 # 1. Прогон тестов с сохранением результатов
