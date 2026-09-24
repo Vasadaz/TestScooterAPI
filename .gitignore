@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project
+.idea
+setup_project.sh
+allure-results
+project_dump.md
+prompt.md
