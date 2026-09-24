@@ -32,6 +32,26 @@ def order_service(api_client: ApiClient) -> OrderService:
 
 
 @pytest.fixture
+def cleanup_couriers(courier_service: CourierService) -> Generator[list, Any, None]:
+    """Удаляет всех курьеров, чьи payload тест добавил в список.
+
+    Пример:
+        cleanup_couriers.append(payload)
+    """
+    created: list[dict] = []
+
+    yield created
+
+    with allure.step("Cleanup: удалить курьеров, созданных в тесте"):
+        for payload in created:
+            login_response = courier_service.login_courier(
+                payload["login"], payload["password"]
+            )
+            if login_response.status_code == 200:
+                courier_service.delete_courier(login_response.json()["id"])
+
+
+@pytest.fixture
 def registered_courier(courier_service: CourierService) -> Generator[dict, Any, None]:
     """Только регистрирует курьера (без логина) и удаляет после теста."""
     payload = generate_courier_credentials()
@@ -63,8 +83,7 @@ def created_order(order_service: OrderService) -> Generator[dict, Any, None]:
     """Создаёт заказ до теста и корректно закрывает его после (cleanup).
 
     Если заказ уже принят курьером (есть courierId) — завершаем через
-    finish, иначе отменяем через cancel. Пустой ответ order трактуется
-    как ошибка подготовки с понятным сообщением.
+    finish, иначе отменяем через cancel.
 
     :return: dict с order_id и track созданного заказа
     """
@@ -110,23 +129,3 @@ def accepted_order(
     with allure.step("Cleanup: завершить заказ и удалить курьера"):
         order_service.finish_order(order_id)
         courier_service.delete_courier(courier["id"])
-
-
-@pytest.fixture
-def cleanup_couriers(courier_service: CourierService) -> Generator[list, Any, None]:
-    """Гарантированно удаляет всех курьеров, логины которых тест добавит в список.
-
-    Пример:
-        cleanup_couriers.append(payload)
-    """
-    created: list[dict] = []
-
-    yield created
-
-    with allure.step("Cleanup: удалить курьеров, созданных в тесте"):
-        for payload in created:
-            login_response = courier_service.login_courier(
-                payload["login"], payload["password"]
-            )
-            if login_response.status_code == 200:
-                courier_service.delete_courier(login_response.json()["id"])
