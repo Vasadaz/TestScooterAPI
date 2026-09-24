@@ -217,9 +217,17 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Project
-.idea
+# --- Allure ---
+allure-results/
+# allure-report/ НЕ исключаем — по заданию отчёт пушится в репозиторий
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.DS_Store
+
+# Project files
 setup_project.sh
-allure-results
-project_dump.md
 prompt.md
+project_dump.md
+
