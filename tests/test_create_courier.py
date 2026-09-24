@@ -1,4 +1,4 @@
-"""Тесты ручки «Создать курьера»."""
+"""Тесты ручки «Создать курьера» (POST /api/v1/courier)."""
 
 import allure
 import pytest
@@ -27,14 +27,10 @@ class TestCreateCourier:
 
     @allure.title("Нельзя создать двух одинаковых курьеров, ответ 409")
     def test_create_courier_when_login_already_used_returns_409(
-            self, courier_service, cleanup_couriers
+            self, courier_service, registered_courier
     ):
         """Повторная регистрация с тем же логином возвращает 409 и сообщение."""
-        payload = generate_courier_credentials()
-        cleanup_couriers.append(payload)
-        courier_service.create_courier(payload)
-
-        response = courier_service.create_courier(payload)
+        response = courier_service.create_courier(registered_courier)
 
         assert response.status_code == 409
         assert response.json()["message"] == messages.CourierMessages.LOGIN_ALREADY_USED
