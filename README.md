@@ -94,6 +94,8 @@ pytest -v
 
 ## Отчёт Allure
 
+[Пример отчёта Allure.](allure-report/index.html)
+
 ```bash
 # 1. Прогон тестов с сохранением результатов
 pytest --alluredir=allure-results --clean-alluredir
